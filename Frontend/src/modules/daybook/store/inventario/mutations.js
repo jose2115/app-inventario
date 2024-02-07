@@ -70,6 +70,20 @@ export const setHistorial = ( state, historial ) => {
     state.historial = [ ...state.historial, ...historial]
 }
 
+export const addHistorial = (state, historia ) => {
+    
+    const hExist = state.historial.filter( histo => histo.id == historia.id )
+
+    console.log("estado ", state.historial)
+    console.log("response ", hExist)
+    if(hExist.length == 0){
+
+        state.historial = [ historia, ...state.historial  ]
+    }
+    
+
+}
+
 
 //inventarios
 export const setInventarios = (state, inventarios ) => {

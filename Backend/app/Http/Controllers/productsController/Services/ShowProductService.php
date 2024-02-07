@@ -6,30 +6,32 @@ use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 
-class ListProductsService
+class ShowProductService
 {
 
     
 
-    public static function list(){
+    public static function show($id){
 
         DB::beginTransaction();
 
             try {
 
-                $products = Product::with('zona')->take(500)->get();
+                $product = Product::where('cod-barra-1', $id)
+                    ->orWhere('cod-barra-2', $id)
+                    ->orWhere('cod-barra-3', $id)
+                    ->get();
 
-
-                $products = $products->map(function ($product) {
-          
-                     $stocks = $product->stock->map(function ($item){
+                $product = $product->map(function ($product) {
+        
+                    $stocks = $product->stock->map(function ($item){
                         
                         return [
                             'name'  => $item->name,
                             'stock' => $item->stock,
                         ];
 
-                     });
+                    });
 
                     return [
                         'id'            => $product->id,
@@ -45,12 +47,22 @@ class ListProductsService
                     ];
                 });
 
+    
                   $status  = 'ok';
                   $message = 'productos';
 
         DB::commit();
 
-              return response()->json(['status' => $status  , 'smg'   => $message, 'data' => $products]);
+            if ($product->isEmpty()) {
+
+                return response()->json(['status' => 'ko'  , 'smg'   => $message, 'data' => $product]);
+            
+            } else {
+
+                return response()->json(['status' => $status  , 'smg'   => $message, 'data' => $product]);
+            }
+
+              
         
             } catch (\Exception $ex) {
 

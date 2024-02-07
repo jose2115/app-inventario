@@ -7,10 +7,10 @@ use App\Models\Inventario;
 use Illuminate\Support\Facades\DB;
 
 
-class HistorialService
+class ShowHistorialService
 {
 
-    public static function historial(){
+    public static function historial($id){
 
         DB::beginTransaction();
 
@@ -18,9 +18,13 @@ class HistorialService
 
             $historial = DetailInventario::where('inventario_id', self::inventarioActivo())
             ->with(['producto', 'zona'])
+            ->whereHas('producto', function( $query ) use ($id){
+                    $query->where('cod-barra-1', $id)
+                        ->orWhere('cod-barra-2', $id)
+                        ->orWhere('cod-barra-3', $id);
+            })
             ->select('product_id', \DB::raw('count(*) as total'), \DB::raw('MAX(zona_id) as zona_id'))
             ->groupBy('product_id')
-            ->take(500)
             ->get();
 
 
@@ -28,7 +32,6 @@ class HistorialService
           
                           
                 return [
-                    'id'            => $historia->id,
                     'name'          => $historia->producto->description,
                     'total'         => $historia->total,
                     'color'         => $historia->producto->color,
@@ -46,7 +49,16 @@ class HistorialService
                
         DB::commit();
 
+        if ($historial->isEmpty()) {
+
+            return response()->json(['status' => 'ko'  , 'smg'   => 'ningún dato', 'data' => $historial]);
+        
+        } else {
+
             return response()->json(['status' => 'ok'  , 'smg'   => 'Historial', 'data' => $historial]);
+        }
+
+            
 
             } catch (\Exception $ex) {
             

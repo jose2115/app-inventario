@@ -10,6 +10,7 @@ use App\Http\Controllers\InventarioController\Services\CreateZonaService;
 use App\Http\Controllers\InventarioController\Services\DeleteZonaService;
 use App\Http\Controllers\InventarioController\Services\HistorialService;
 use App\Http\Controllers\InventarioController\Services\SelectInventarioService;
+use App\Http\Controllers\InventarioController\Services\ShowHistorialService;
 use App\Http\Controllers\InventarioController\Services\UpdateZonaService;
 use App\Http\Controllers\usersController\Services\AssignedPermissionsRoleService;
 use App\Http\Controllers\usersController\Services\ChangeStateUserService;
@@ -129,6 +130,11 @@ class InventarioController extends Controller
     public function historial()
     {
         return HistorialService::historial();
+    }
+
+    public function showHistorial($id)
+    {
+        return ShowHistorialService::historial($id);
     }
 
 

@@ -8,11 +8,14 @@
         <p class="text-xl font-semibold">Produtos</p>
     </div>
 
-    <div class="w-full px-2 mb-2">
+    <div class="w-full px-2 mb-2 flex">
         <span class="p-input-icon-left w-full">
             <i class="pi pi-search" />
             <InputText v-model="search" placeholder="Buscar" class="w-full" />
         </span>
+        <div class="flex justify-center items-center px-2 ">
+            <Button @click="buscar()" class="w-full pi pi-search" outlined />
+        </div>
     </div>
 
     <div class="w-full  px-2 pt-4 h-screen overflow-y-auto py-2 ">
@@ -61,8 +64,13 @@ export default {
             this.loadProducts();
         },
 
-      ...mapActions('products', ['loadProducts']),
+      ...mapActions('products', ['loadProducts', 'searchProduct']),
 
+        buscar(){
+
+            console.log("buscando prodcuto ", this.search)
+            this.searchProduct(this.search)
+        }
 
     },
     computed: {

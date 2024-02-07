@@ -7,8 +7,43 @@ async function obtenerToken() {
 }
 
 
-export const addItem = async ({commit}, data) => {
+export const searchProduct = async ({ commit }, {code, zona}  ) => {
 
+  const token = await obtenerToken();
+
+  try {
+      const response = await api.get('/show/product/'+code, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      if (response.data.status == 'ok') {
+        // Muestra la alerta de éxito
+        const data = [
+          {
+            'prod': response.data.data,
+            'zona': zona
+          }
+        ]
+
+        const objetoUnido = await addItem(data);
+
+        commit('addItems', objetoUnido )
+
+      }
+
+      
+    } catch (error) {
+      // Si la solicitud falla, maneja el error aquí
+    }
+
+}
+
+
+async function addItem (data) {
+
+  
   const objetoUnido = {  ...data[0].prod[0], ...data[0].zona };
 
   Object.keys(data[0].prod[0]).forEach(key => {
@@ -27,8 +62,8 @@ export const addItem = async ({commit}, data) => {
   objetoUnido.zona_id    = data[0].zona.id
   objetoUnido.unidad     = 1
 
+  return objetoUnido;
   
-  commit('addItems', objetoUnido )
 }
 
 
@@ -305,6 +340,38 @@ export const loadHistorial = async ({ commit }) => {
 
   commit('setHistorial', historial )
 }
+
+
+//buscar historial
+export const searchHistory = async ({ commit }, code ) => {
+
+  const token = await obtenerToken();
+
+  try {
+      const response = await api.get('/show/historial/'+code, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      if (response.data.status == 'ok') {
+        // Muestra la alerta de éxito
+       
+        commit('addHistorial', response.data.data[0] )
+
+      }
+
+      
+    } catch (error) {
+      // Si la solicitud falla, maneja el error aquí
+    }
+
+}
+
+
+
+
+
 
 
 

@@ -13,6 +13,16 @@ export const updateRoutes = ( state, route  ) => {
     
 }
 
+export const addProduct = (state, product) => {
+
+    const pExist = state.productos.filter( prod => prod.id == product.id )
+    
+    if(pExist.length == 0){
+        state.productos = [product, ...state.productos]
+    }
+    
+}
+
 export const addImportado = (state, importado ) => {
     
     state.importados = [ importado, ...state.importados  ]

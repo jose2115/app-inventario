@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/list/products', [ProductsController::class, 'List']);
 
+    Route::get('/show/product/{id}', [ProductsController::class, 'show']);
+
 
     //inventario
 
@@ -52,8 +54,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //productos contados
 
     Route::get('/historial/list', [InventarioController::class, 'historial']);
+    Route::get('/show/historial/{id}', [InventarioController::class, 'showHistorial']);
 
 });
+
+
 
 
     

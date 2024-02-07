@@ -70,160 +70,30 @@ export const uploadExcel = async ({ commit }, {formData, data} ) => {
 
 }
 
-
-
-
-
-
-export const loadRemitentesPublic = async ({ commit }) => {
-
-  const token = await obtenerToken();
-
-  const data  = await countryApi.get('/public/remitente/list',{
-    headers: {
-      'Authorization': `Bearer ${token}`
-    },
-  });
-
-  if ( !data.data.data){
-      commit('setRemitente', [] )
-      return
-  }
-
-  const entries = []
-  for( let id of Object.keys( data.data.data ) ) {
-      entries.push({
-          id,
-          ...data.data.data[id]
-      })
-  }
-  
-
-  commit('setRemitente', entries )
-}
-
-export const createRemitente = async ({ commit }, data ) => {
-
-  const token = await obtenerToken();
-
-        try {
-            const response = await countryApi.post('/remitente/create', data, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              },
-            });
-
-            if (response.status === 200) {
-              // Muestra la alerta de éxito
-              commit('addRemitente', response.data )
-
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: response.data.smg,
-                showConfirmButton: false,
-                timer: 1500
-              })
-            }
-          } catch (error) {
-
-            const data = {
-              email :  error.response.data.errors.email[0],
-              identification: error.response.data.errors.identification[0] 
-            }
-            commit('messageError', data)
-            // Si la solicitud falla, maneja el error aquí
-          }
-
-}
-
-export const editRemitente = async ({ commit }, data ) => {
-
-
-  const token = await obtenerToken();
-
-        try {
-            const response = await countryApi.post('/remitente/update/'+data.id, data, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              },
-            });
-            // Si la solicitud se realizó correctamente
-            if (response.status === 200) {
-              // Muestra la alerta de éxito
-              commit('updateRemitente', response.data )
-
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: response.data.smg,
-                showConfirmButton: false,
-                timer: 1500
-              })
-            }
-          } catch (error) {
-            // Si la solicitud falla, maneja el error aquí
-          }
-
-}
-
-//changeStateRemitente
-
-export const changeStateRemitente = async ({ commit }, id ) => {
-
+export const searchProduct = async ({ commit }, code ) => {
 
   const token = await obtenerToken();
 
   try {
-      const response = await countryApi.get('/remitente/changeState/'+id, {
+      const response = await api.get('/show/product/'+code, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
       });
-      // Si la solicitud se realizó correctamente
-      if (response.status === 200) {
-        // Muestra la alerta de éxito
-        commit('updateChangeState', response.data )
 
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: response.data.smg,
-          showConfirmButton: false,
-          timer: 1500
-        })
+      if (response.data.status == 'ok') {
+        // Muestra la alerta de éxito
+       
+        commit('addProduct', response.data.data[0] )
+
       }
+
+      
     } catch (error) {
       // Si la solicitud falla, maneja el error aquí
     }
 
 }
 
-export const deleteRemitente = async ({ commit }, id ) => {
 
-  const token = await obtenerToken();
 
-  try {
-            const response = await countryApi.get('/route/delete/'+id, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              },
-            });
-            // Si la solicitud se realizó correctamente
-            if (response.status === 200) {
-              // Muestra la alerta de éxito
-              commit('deleteRoutes', id )
-
-              Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: response.data.smg,
-                showConfirmButton: false,
-                timer: 1500
-              })
-            }
-          } catch (error) {
-            // Si la solicitud falla, maneja el error aquí
-          }
-
-}

@@ -124,12 +124,13 @@ export default {
             this.loadZonasPublic();
         },
 
-        ...mapActions('inventario', ['addItem', 'loadZonasPublic', 'deleteItems', 'deleteItem', 'sendData']),
+        ...mapActions('inventario', ['searchProduct', 'loadZonasPublic', 'deleteItems', 'deleteItem', 'sendData']),
         ...mapActions('products', ['loadProducts']),
 
         product(){
             const prod = this.getProduct(this.search);
             const zona = this.selectedZona;
+            const code = this.search
             
             if(!this.search){
 
@@ -144,7 +145,9 @@ export default {
             }
 
 
-            if(prod){
+            this.searchProduct({code, zona})
+
+            /* if(prod){
              const data = [
                     {
                         'prod': prod,
@@ -155,7 +158,7 @@ export default {
                 this.addItem(data)
                 this.search = ''
                 this.$toast.add({ severity: 'success', summary: 'Confirmed', detail: 'Agregado', life: 3000 });
-            }
+            } */
         
         },
 
